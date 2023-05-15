@@ -1,7 +1,17 @@
 const Web3 = require('web3');
 
 // create a web3 instance
-const web3 = new Web3('https://nd-726-055-946.p2pify.com/9f786b449e03850052796efffe90d787');
+const web3 = new Web3(process.env.NODE_ENDPOINT);
+
+async function getChainId() {  
+    try {
+      // Get the Chain ID
+      const chainId = await web3.eth.getChainId();
+      console.log('Chain ID:', chainId);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
 
 // Define a function to retrieve a block by block number with retries in case of failure
@@ -42,4 +52,4 @@ async function getTransactionReceiptsWithRetries(block) {
 }
 
 
-module.exports = { getBlockWithRetries, getTransactionReceiptsWithRetries };
+module.exports = { getBlockWithRetries, getTransactionReceiptsWithRetries, getChainId };

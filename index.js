@@ -1,12 +1,12 @@
-const mysql = require('mysql');
-const connection = require('./database');
+const Web3 = require('web3');
 require('./scripts');
 const node = require('./eth_client.js');
 const save = require('./data.js');
 
 
 async function main() {
-    chainId = getChainId()
+    let chainId = await node.getChainId();
+    console.log(chainId)
     let block = 8004867;
     while (true) {
         const blockWithTxs = await node.getBlockWithRetries(block, 5);
@@ -22,18 +22,6 @@ async function main() {
 
 }
 
-async function getChainId() {
-    // Create a new instance of Web3
-    const web3 = new Web3('<YOUR_PROVIDER_URL>');
-  
-    try {
-      // Get the Chain ID
-      const chainId = await web3.eth.getChainId();
-      console.log('Chain ID:', chainId);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
 
 main();
 
