@@ -1,10 +1,29 @@
-require('./scripts');
+const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
+const app = express();
 const node = require('./eth_client.js');
 const save = require('./data.js');
+const query = require('./query.js');
 
+app.get('/api/v1/transactions', async (req, res) => {
+    try {
+      const addresses = req.query.addresses;
+      const wallets = addresses.split(",")
+      if (!wallets || wallets.length === 0) {
+        return res.status(400).json({ error: 'No addresses provided' });
+      }
+      const transactions = await query.getTransactionsByAddresses(wallets);
+      res.json(transactions);
+    } catch (error) {
+      console.error('Error retrieving transactions:', error);
+      res.status(500).json({ error: 'An error occurred' });
+    }
+  });
+  
 async function main() {
     const chainId = await node.getChainId();
-    let fromBlock = 8001867;
+    let fromBlock = 1;
     let toBlock = 8004867;
 
     while (fromBlock < toBlock) {
@@ -21,3 +40,8 @@ async function main() {
 }
 
 main();
+
+
+app.listen(8080, () => {
+    console.log('Server is running on port 8080');
+});

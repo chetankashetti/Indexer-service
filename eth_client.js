@@ -3,17 +3,23 @@ const Web3 = require('web3');
 // create a web3 instance
 const web3 = new Web3(process.env.NODE_ENDPOINT);
 
-async function getChainId() {  
-    try {
-      // Get the Chain ID
-      const chainId = await web3.eth.getChainId();
-      console.log('Chain ID:', chainId);
-      return chainId;
-    } catch (error) {
-      console.error('Error:', error);
+async function getChainId(maxRetries = 5, delay = 1000) {
+    let retries = 0;
+    while (retries < maxRetries) {
+      try {
+        // Get the Chain ID
+        const chainId = await web3.eth.getChainId();
+        console.log('Chain ID:', chainId);
+        return chainId;
+      } catch (error) {
+        console.error('Error:', error);
+        retries++;
+  
+        // Retry after a delay
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
     }
     return null;
-    
   }
 
 

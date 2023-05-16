@@ -1,4 +1,5 @@
 const pool = require('./database');
+const query = require('./query');
 
 // Function to store a block in the blocks table
 async function storeBlock(block, chainId) {
@@ -20,7 +21,7 @@ async function storeBlock(block, chainId) {
       // Handle unique key constraint violation
       console.error(`Block ${block.number} already exists`);
       // Perform necessary actions or error handling
-      return getBlockIdByNumber(block.number);
+      return query.getBlockIdByNumber(block.number);
     } else {
       // Handle other errors
       console.error('Error storing block:', error);
@@ -84,10 +85,4 @@ async function storeTransactionReceipts(receipts, chainId) {
 
 }
 
-async function getBlockIdByNumber(blockNum) {
-    const getBlockIdQuery = `select id from blocks where number= ${blockNum}`;
-    let [result] = await pool.query(getBlockIdQuery);
-    return result[0].id;
-}
-
-module.exports = { storeBlock, storeTransaction, storeTransactionReceipts, getBlockIdByNumber }; 
+module.exports = { storeBlock, storeTransaction, storeTransactionReceipts }; 
