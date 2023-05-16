@@ -22,6 +22,7 @@ const createBlocksTableQuery = `
     totalDifficulty BIGINT,
     transactionsRoot VARCHAR(255),
     uncles VARCHAR(255),
+    chainId BIGINT,
     PRIMARY KEY (id)
 );`;
 
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     transactionIndex BIGINT,
     value VARCHAR(255),
     blockId INT NOT NULL,
+    chainId BIGINT,
     PRIMARY KEY (id),
     INDEX idx_transactions_hash (transactionHash),
     FOREIGN KEY (blockId) REFERENCES blocks(id)
@@ -69,6 +71,7 @@ CREATE TABLE IF NOT EXISTS transaction_receipts (
     status VARCHAR(255),
     toAddress VARCHAR(255),
     transactionIndex BIGINT,
+    chainId BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (transactionHash) REFERENCES transactions(transactionHash)
 );`;
@@ -89,6 +92,7 @@ CREATE TABLE IF NOT EXISTS transaction_logs (
     topic2 VARCHAR(255),
     topic3 VARCHAR(255),
     data TEXT,
+    chainId BIGINT,
     transactionIndex BIGINT,
     transaction_receipt_id INT,
     PRIMARY KEY (id),

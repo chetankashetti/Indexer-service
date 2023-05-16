@@ -1,14 +1,15 @@
 const pool = require('./database');
 
 // Function to store a block in the blocks table
-async function storeBlock(block) {
+async function storeBlock(block, chainId) {
+  console.log(chainId);
   const insertBlockQuery = `
   INSERT INTO blocks(difficulty, extraData, gasLimit, gasUsed, blockHash, miner, mixHash, nonce, number, parentHash,
-     receiptsRoot, sha3Uncles, size, stateRoot, timestamp, totalDifficulty, transactionsRoot, uncles
+     receiptsRoot, sha3Uncles, size, stateRoot, timestamp, totalDifficulty, transactionsRoot, uncles, chainId
   ) VALUES (${block.difficulty}, '${block.extraData}', ${block.gasLimit}, ${block.gasUsed}, '${block.hash}',
     '${block.miner}', '${block.mixHash}', '${block.nonce}', ${block.number}, '${block.parentHash}', '${block.receiptsRoot}',
     '${block.sha3Uncles}', ${block.size}, '${block.stateRoot}', ${block.timestamp}, ${block.totalDifficulty}, '${block.transactionsRoot}',
-    '${block.uncles}' 
+    '${block.uncles}', ${chainId} 
   );
 `;
 
@@ -18,12 +19,12 @@ async function storeBlock(block) {
 }
 
 // Function to store transactions in the transaction table
-async function storeTransaction(block, blockId) {
+async function storeTransaction(block, blockId, chainId) {
   for (let i = 0; i < block.transactions.length; i++) {
     const transaction = block.transactions[i];
     const insertTransactionQuery = `INSERT INTO transactions(blockHash, blockNumber, fromAddress, gas, gasPrice, transactionHash, input, nonce, toAddress, transactionIndex,
-     value, blockId) VALUES ('${transaction.blockHash}', ${transaction.blockNumber}, '${transaction.from}', ${transaction.gas}, '${transaction.gasPrice}',
-    '${transaction.hash}', '${transaction.input}', '${transaction.nonce}', '${transaction.to}', '${transaction.transactionIndex}', '${transaction.value}', '${blockId}'
+     value, blockId, chainId) VALUES ('${transaction.blockHash}', ${transaction.blockNumber}, '${transaction.from}', ${transaction.gas}, '${transaction.gasPrice}',
+    '${transaction.hash}', '${transaction.input}', '${transaction.nonce}', '${transaction.to}', '${transaction.transactionIndex}', '${transaction.value}', '${blockId}', ${chainId}
   );
 `;
 
@@ -33,12 +34,12 @@ async function storeTransaction(block, blockId) {
 
 }
 
-async function storeTransactionReceipts(receipts, blockId) {
+async function storeTransactionReceipts(receipts, chainId) {
   for (let i = 0; i < receipts.length; i++) {
     const receipt = receipts[i];
-    const insertTransactionQuery = `INSERT INTO transaction_receipts(transactionHash, blockHash, blockNumber, contractAddress, cumulativeGasUsed, fromAddress, gasUsed, status, toAddress, transactionIndex
+    const insertTransactionQuery = `INSERT INTO transaction_receipts(transactionHash, blockHash, blockNumber, contractAddress, cumulativeGasUsed, fromAddress, gasUsed, status, toAddress, transactionIndex, chainId
      ) VALUES ('${receipt.transactionHash}', '${receipt.blockHash}', ${receipt.blockNumber}, '${receipt.contractAddress}', ${receipt.cumulativeGasUsed}, '${receipt.from}',
-    '${receipt.gasUsed}', '${receipt.status}', '${receipt.to}', '${receipt.transactionIndex}' 
+    '${receipt.gasUsed}', '${receipt.status}', '${receipt.to}', '${receipt.transactionIndex}', ${chainId}
   );
 `;
 
@@ -60,9 +61,9 @@ async function storeTransactionReceipts(receipts, blockId) {
 			if (log.topics.length > 3) {
 				topic3 = log.topics[3]
 			}
-      const insertLogQuery = `INSERT INTO transaction_logs(transactionHash, blockNumber, logIndex, address, topic0, topic1, topic2, topic3, data, transactionIndex, transaction_receipt_id
+      const insertLogQuery = `INSERT INTO transaction_logs(transactionHash, blockNumber, logIndex, address, topic0, topic1, topic2, topic3, data, transactionIndex, transaction_receipt_id, chainId
         ) VALUES ('${log.transactionHash}', ${log.blockNumber}, '${log.logIndex}', '${log.address}', '${topic0}', '${topic1}', '${topic2}', '${topic3}',
-       '${log.data}', ${log.transactionIndex}, ${receipt_id} );
+       '${log.data}', ${log.transactionIndex}, ${receipt_id}, ${chainId} );
    `;
    
        let [logres] = await pool.query(insertLogQuery);

@@ -8,9 +8,12 @@ async function getChainId() {
       // Get the Chain ID
       const chainId = await web3.eth.getChainId();
       console.log('Chain ID:', chainId);
+      return chainId;
     } catch (error) {
       console.error('Error:', error);
     }
+    return null;
+    
   }
 
 
