@@ -23,7 +23,8 @@ const createBlocksTableQuery = `
     transactionsRoot VARCHAR(255),
     uncles VARCHAR(255),
     chainId BIGINT,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_chain_number (chainId, number)
 );`;
 
 pool.query(createBlocksTableQuery);
@@ -48,6 +49,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     chainId BIGINT,
     PRIMARY KEY (id),
     INDEX idx_transactions_hash (transactionHash),
+    UNIQUE KEY unique_transaction_hash (transactionHash),
     FOREIGN KEY (blockId) REFERENCES blocks(id)
 );`;
 

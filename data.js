@@ -2,7 +2,6 @@ const pool = require('./database');
 
 // Function to store a block in the blocks table
 async function storeBlock(block, chainId) {
-  console.log(chainId);
   const insertBlockQuery = `
   INSERT INTO blocks(difficulty, extraData, gasLimit, gasUsed, blockHash, miner, mixHash, nonce, number, parentHash,
      receiptsRoot, sha3Uncles, size, stateRoot, timestamp, totalDifficulty, transactionsRoot, uncles, chainId
@@ -12,10 +11,22 @@ async function storeBlock(block, chainId) {
     '${block.uncles}', ${chainId} 
   );
 `;
-
-  let [result] = await pool.query(insertBlockQuery);
-  console.log(`Block ${block.number} stored`)
-  return result.insertId
+  try {
+    const [result] = await pool.query(insertBlockQuery);
+    console.log(`Block ${block.number} stored`);
+    return result.insertId;
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      // Handle unique key constraint violation
+      console.error(`Block ${block.number} already exists`);
+      // Perform necessary actions or error handling
+      return getBlockIdByNumber(block.number);
+    } else {
+      // Handle other errors
+      console.error('Error storing block:', error);
+      // Perform necessary actions or error handling
+    }
+  }
 }
 
 // Function to store transactions in the transaction table
@@ -46,31 +57,37 @@ async function storeTransactionReceipts(receipts, chainId) {
     let [result] = await pool.query(insertTransactionQuery);
     const receipt_id = result.insertId;
 
-    for(let j=0; j < receipt.logs.length;j++){
+    for (let j = 0; j < receipt.logs.length; j++) {
       const log = receipt.logs[j];
       let topic0 = "", topic1 = "", topic2 = "", topic3 = "";
       if (log.topics.length > 0) {
-				topic0 = log.topics[0]
-			}
-			if (log.topics.length > 1) {
-				topic1 = log.topics[1]
-			}
-			if (log.topics.length > 2) {
-				topic2 = log.topics[2]
-			}
-			if (log.topics.length > 3) {
-				topic3 = log.topics[3]
-			}
+        topic0 = log.topics[0]
+      }
+      if (log.topics.length > 1) {
+        topic1 = log.topics[1]
+      }
+      if (log.topics.length > 2) {
+        topic2 = log.topics[2]
+      }
+      if (log.topics.length > 3) {
+        topic3 = log.topics[3]
+      }
       const insertLogQuery = `INSERT INTO transaction_logs(transactionHash, blockNumber, logIndex, address, topic0, topic1, topic2, topic3, data, transactionIndex, transaction_receipt_id, chainId
         ) VALUES ('${log.transactionHash}', ${log.blockNumber}, '${log.logIndex}', '${log.address}', '${topic0}', '${topic1}', '${topic2}', '${topic3}',
        '${log.data}', ${log.transactionIndex}, ${receipt_id}, ${chainId} );
    `;
-   
-       let [logres] = await pool.query(insertLogQuery);
+
+      let [logres] = await pool.query(insertLogQuery);
     }
   }
   console.log(`Block receipts ${receipts.length} stored`)
 
 }
 
-module.exports = { storeBlock, storeTransaction, storeTransactionReceipts }; 
+async function getBlockIdByNumber(blockNum) {
+    const getBlockIdQuery = `select id from blocks where number= ${blockNum}`;
+    let [result] = await pool.query(getBlockIdQuery);
+    return result[0].id;
+}
+
+module.exports = { storeBlock, storeTransaction, storeTransactionReceipts, getBlockIdByNumber }; 
