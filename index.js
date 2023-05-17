@@ -30,8 +30,8 @@ app.get('/api/v1/transactions', async (req, res) => {
   
 async function main() {
     const chainId = await node.getChainId();
-    let fromBlock = 1;
-    let toBlock = 8004867;
+    let fromBlock = process.env.FROM_BLOCK;
+    let toBlock = process.env.TO_BLOCK;
 
     while (fromBlock < toBlock) {
         const blockWithTxs = await node.getBlockWithRetries(fromBlock, 5);
