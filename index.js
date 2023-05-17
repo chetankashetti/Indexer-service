@@ -23,6 +23,10 @@ app.get('/api/v1/transactions', async (req, res) => {
       res.status(500).json({ error: 'An error occurred' });
     }
   });
+
+  app.get('/health', async (req, res) => {
+      res.status(200).json();
+  });
   
 async function main() {
     const chainId = await node.getChainId();
