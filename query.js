@@ -1,16 +1,15 @@
 const pool = require('./database');
 
 async function getTransactionsByAddresses(addresses) {
-    transactions = [];
+    const transactions = [];
     for (const address of addresses) {
-        const getBlockIdQuery = `SELECT * FROM transactions WHERE fromAddress= '${address}' OR toAddress= '${address}' ORDER BY blockNumber DESC;        `;
-        let [result] = await pool.query(getBlockIdQuery);
-        console.log(result);
-        transactions.push(result);
+        const getTransactionsQuery = 'SELECT * FROM transactions WHERE fromAddress = ? OR toAddress = ? ORDER BY blockNumber DESC;';
+        const [rows] = await pool.query(getTransactionsQuery, [ address, address ]);
+        console.log(rows);
+        transactions.push(rows);
     }
     return transactions;
 }
-
 
 async function getBlockIdByNumber(blockNum) {
     const getBlockIdQuery = `select id from blocks where number= ${blockNum}`;

@@ -9,8 +9,11 @@ const query = require('./query.js');
 app.get('/api/v1/transactions', async (req, res) => {
     try {
       const addresses = req.query.addresses;
+      if (!addresses) {
+        return res.status(400).json({ error: 'No addresses provided' });
+      }
       const wallets = addresses.split(",")
-      if (!wallets || wallets.length === 0) {
+      if (wallets.length === 0) {
         return res.status(400).json({ error: 'No addresses provided' });
       }
       const transactions = await query.getTransactionsByAddresses(wallets);

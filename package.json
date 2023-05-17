@@ -4,14 +4,15 @@
   "description": "An assignment from coinshift",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
     "mysql": "^2.18.1",
-    "mysql2": "^3.3.0",
+    "mysql2": "^3.3.1",
     "web3": "^1.10.0"
   },
   "devDependencies": {
