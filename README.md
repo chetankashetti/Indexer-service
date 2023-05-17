@@ -13,3 +13,6 @@ DB_NAME=
 
 # Use the below command to run
 node index.js
+
+# System Architecture
+<img width="758" alt="Screenshot 2023-05-17 at 10 30 27 PM" src="https://github.com/chetankashetti/Indexer-service/assets/24208057/de51e48a-df6e-4101-ac4c-9150b3078b76">
