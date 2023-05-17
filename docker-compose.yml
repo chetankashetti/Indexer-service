@@ -1,0 +1,19 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:8080'
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENDPOINT=https://goerli-archival.gateway.pokt.network/v1/lb/62cffbe1b37b8e00392b3872
+      - DB_HOST=host.docker.internal:3306
+      - DB_USER=root
+      - DB_PASSWORD=test
+      - DB_NAME=indexer_db
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
