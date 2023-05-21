@@ -85,4 +85,14 @@ async function storeTransactionReceipts(receipts, chainId) {
 
 }
 
-module.exports = { storeBlock, storeTransaction, storeTransactionReceipts }; 
+async function startIndexingFromBlock(blockNumber, chainId) {
+  const indexQuery = `INSERT INTO block_indexed(blockNumber, chainId) values(${blockNumber}, ${chainId});`;
+  let result = await pool.query(indexQuery);
+}
+
+async function updateBlockIndexed(blockNumber, chainId) {
+  const indexQuery = `update block_indexed set blockNumber=${blockNumber} where chainId=${chainId};`;
+  let result = await pool.query(indexQuery);
+}
+
+module.exports = { storeBlock, storeTransaction, storeTransactionReceipts, updateBlockIndexed, startIndexingFromBlock }; 

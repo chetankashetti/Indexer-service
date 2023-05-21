@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS transaction_receipts (
 pool.query(createTransactionReceiptsQuery);
 console.log('Transaction receipts table created or already exists!');
 
-// create the logs table if it does not exist
+// create the transaction logs table if it does not exist
 const createLogsTableQuery = `
 CREATE TABLE IF NOT EXISTS transaction_logs (
     id INT NOT NULL AUTO_INCREMENT,
@@ -103,3 +103,15 @@ CREATE TABLE IF NOT EXISTS transaction_logs (
 
 pool.query(createLogsTableQuery);
 console.log('Logs table created or already exists!');
+
+// create the block tracking table if it does not exist
+const createBlockTrackingTableQuery = `
+CREATE TABLE IF NOT EXISTS block_indexed (
+    id INT NOT NULL AUTO_INCREMENT,
+    blockNumber BIGINT,
+    chainId BIGINT,
+    PRIMARY KEY (id)
+);`;
+
+pool.query(createBlockTrackingTableQuery);
+console.log('Blocks indexed table created or already exists!');
