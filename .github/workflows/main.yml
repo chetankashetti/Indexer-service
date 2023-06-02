@@ -28,4 +28,4 @@ jobs:
         run: python chatgpt-pr-reviwer/pr_review_bot.py
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: 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
