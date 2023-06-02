@@ -1,0 +1,31 @@
+name: PR Review Bot
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  pr_review_bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          git clone https://github.com/arhamj/chatgpt-pr-reviwer.git
+          pip install --upgrade pip
+          pip install -r chatgpt-pr-reviwer/requirements.txt
+
+      - name: Run PR review bot
+        run: python chatgpt-pr-reviwer/pr_review_bot.py
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
