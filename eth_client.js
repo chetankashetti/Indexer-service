@@ -22,7 +22,6 @@ async function getChainId(maxRetries = 5, delay = 1000) {
     return null;
 }
 
-
 // Define a function to retrieve a block by block number with retries in case of failure
 async function getBlockWithRetries(blockNumber, maxRetries) {
     let retries = 0;
@@ -38,7 +37,6 @@ async function getBlockWithRetries(blockNumber, maxRetries) {
     console.error(`Max retries reached for block ${blockNumber}. Aborting...`);
     return null;
 }
-
 
 async function getTransactionReceiptsWithRetries(block) {
     let receipts = [];
