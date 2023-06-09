@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          git clone https://github.com/arhamj/chatgpt-pr-reviwer.git
+          git clone https://github.com/chetankashetti/chatgpt-pr-reviewer.git
           pip install --upgrade pip
           pip install -r chatgpt-pr-reviwer/requirements.txt
 
